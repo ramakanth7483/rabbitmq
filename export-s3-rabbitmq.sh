@@ -4,7 +4,7 @@
 RABBITMQ_USER="admin"
 RABBITMQ_PASS="Ankur@51206"
 RABBITMQ_HOST="rabbit@ip-172-31-18-216.ec2.internal"
-RABBITMQ_PORT="5672"
+RABBITMQ_PORT="15672" # earlier also worked with 5672
 S3_BUCKET="rabbitankur"
 BACKUP_NAME="rabbitmq_backup_$(date +%Y%m%d%H%M%S).json"
 BACKUP_PATH="/tmp/${BACKUP_NAME}"
