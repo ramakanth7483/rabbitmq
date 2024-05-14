@@ -1,0 +1,22 @@
+---
+- name: Decommission RabbitMQ Instance (Manual)
+  hosts: rabbitmq_server  # Replace with specific server to decommission
+  become: true           # Requires root privileges
+
+  tasks:
+    # Drain consumers (consider using RabbitMQ management API calls)
+    - name: Drain consumers (manual intervention required)
+      debug:
+        msg: "Please drain consumers from this server before decommissioning."
+
+    # Stop publishing to mirrored queues (optional)
+    - name: Stop publishing to mirrored queues (optional)
+      # ... (add tasks to stop message publishing if needed) ...
+
+    # Remove node from cluster (replace with actual command)
+    - name: Remove node from cluster
+      command: rabbitmqctl cluster leave
+
+    # Additional notes:
+    - This playbook provides a starting point for manual decommissioning.
+    - Adapt the tasks to include specific commands for draining consumers and stopping publishing based on your messaging system.
