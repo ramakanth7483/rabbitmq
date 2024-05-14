@@ -1,0 +1,24 @@
+---
+- name: Join RabbitMQ Cluster and Enable Mirroring Plugin
+  hosts: ASG-rabbitMQ-HA  # Replace with your actual ASG name
+  become: true           # Requires root privileges
+
+  tasks:
+    # Ensure RabbitMQ service is running (idempotent)
+    - name: Ensure RabbitMQ service is running
+      service:
+        name: rabbitmq-server
+        state: started
+        enabled: yes
+
+    # Join existing cluster (replace with your cluster name)
+    - name: Join RabbitMQ cluster
+      rabbitmq_cluster:
+        name: my_cluster_name  # Replace with your desired cluster name
+        cluster_nodes: "{{ groups['ASG-rabbitMQ-HA'] }}"  # Use ASG group name
+        state: present
+
+    # Install automatic mirroring plugin (replace with actual installation command)
+    - name: Install rabbitmq-automatic-queue-mirroring plugin
+      command: rabbitmq-plugins enable rabbitmq-automatic-queue-mirroring
+
