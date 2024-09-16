@@ -1,0 +1,48 @@
+---
+- name: Install Erlang and RabbitMQ
+  hosts: ASG-rabbitMQ-HA  # Replace with your actual ASG name
+  become: true           # Requires root privileges
+
+  tasks:
+    # Update package lists
+    - name: Update apt cache
+      apt: update_cache=yes
+
+    # Install Erlang (includes dependencies)
+    - name: Install Erlang
+      apt: name=esl-erlang state=present
+
+    # Create RabbitMQ user (replace with desired username and password)
+    - name: Create RabbitMQ user
+      rabbitmq_user:
+        name: "{{ rabbitmq_user }}"
+        password: "{{ rabbitmq_password }}"
+        tags: administrator  # Grant administrator privileges
+        state: present
+
+    # Grant management plugin permissions (replace with specific plugins)
+    - name: Grant management plugin permissions (select plugins you need)
+      rabbitmq_plugin_permissions:
+        user: "{{ rabbitmq_user }}"
+        plugin: "{{ item }}"  # Loop through a list of plugins
+        configure: yes
+        state: present
+      loop: "{{ rabbitmq_management_plugins }}"  # List of plugins requiring permissions
+
+    # Install RabbitMQ server package
+    - name: Install RabbitMQ server
+      apt: name=rabbitmq-server state=present
+
+    # Enable and start RabbitMQ service
+    - name: Enable and start RabbitMQ service
+      service:
+        name: rabbitmq-server
+        state: started
+        enabled: yes
+
+  # Define variables for user and plugins (modify as needed)
+  vars:
+    rabbitmq_user: "rabbitmq_admin"
+    rabbitmq_password: "your_strong_password"
+    rabbitmq_management_plugins:
+      - rabbitmq_management  # Replace with plugins you need (e.g., rabbitmq_stomp, rabbitmq_prometheus)
